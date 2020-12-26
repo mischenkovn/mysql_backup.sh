@@ -19,7 +19,7 @@
 #==============================================================================
 
 # directory to put the backup files
-BACKUP_DIR=/Users/[your user name]/backup
+BACKUP_DIR=/backups
 
 # MYSQL Parameters
 MYSQL_UNAME=root
@@ -40,7 +40,16 @@ KEEP_BACKUPS_FOR=30 #days
 #==============================================================================
 
 # YYYY-MM-DD
-TIMESTAMP=$(date +%F)
+TIMESTAMP=$(date +%F_%H-%M)
+
+function create_backups_folder()
+{
+  echo "Check backup folder ${BACKUP_DIR}"
+  if [[ ! -d "${BACKUP_DIR}" ]]; then
+    mkdir -p ${BACKUP_DIR} || exit 1 
+  fi 
+}
+
 
 function delete_old_backups()
 {
@@ -95,6 +104,7 @@ function hr(){
 #==============================================================================
 # RUN SCRIPT
 #==============================================================================
+create_backups_folder
 delete_old_backups
 hr
 backup_databases
