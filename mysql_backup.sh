@@ -81,7 +81,9 @@ function backup_database(){
     backup_file="$BACKUP_DIR/$TIMESTAMP.$database.sql.gz" 
     output+="$database => $backup_file\n"
     echo_status "...backing up $count of $total databases: $database"
-    $(mysqldump $(mysql_login) $database | gzip -9 > $backup_file)
+    mysqldump $(mysql_login) $database | gzip -9 > $backup_file
+    if [[ ${PIPESTATUS[0]} -ne 0 || ${PIPESTATUS[1]} -ne 0 ]];then exit 1; fi
+
 }
 
 function backup_databases(){
@@ -105,8 +107,9 @@ function hr(){
 # RUN SCRIPT
 #==============================================================================
 create_backups_folder
-delete_old_backups
 hr
 backup_databases
+hr
+delete_old_backups
 hr
 printf "All backed up!\n\n"
