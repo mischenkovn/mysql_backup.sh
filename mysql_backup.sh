@@ -35,12 +35,27 @@ PATH=$PATH:/usr/local/mysql/bin
 # Number of min to keep backups
 KEEP_BACKUPS_FOR=3 #min
 
+#Check min size
+MINIMUM_SIZE=800
+
 #==============================================================================
 # METHODS
 #==============================================================================
 
 # YYYY-MM-DD
 TIMESTAMP=$(date +%F_%H-%M)
+
+
+function check_size()
+{
+  actualsize=$(stat -c%s ${backup_file})
+  if [[ ${actualsize} -le ${MINIMUM_SIZE} ]]; then
+    echo "${backup_file} size is under ${MINIMUM_SIZE}" 
+    exit 1
+  fi
+}
+
+
 
 function create_backups_folder()
 {
@@ -83,7 +98,7 @@ function backup_database(){
     echo_status "...backing up $count of $total databases: $database"
     mysqldump $(mysql_login) $database | gzip -9 > $backup_file
     if [[ ${PIPESTATUS[0]} -ne 0 || ${PIPESTATUS[1]} -ne 0 ]];then exit 1; fi
-
+    check_size
 }
 
 function backup_databases(){
