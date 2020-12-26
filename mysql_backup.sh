@@ -32,8 +32,8 @@ IGNORE_DB="(^mysql|_schema$)"
 # include mysql and mysqldump binaries for cron bash user
 PATH=$PATH:/usr/local/mysql/bin
 
-# Number of days to keep backups
-KEEP_BACKUPS_FOR=30 #days
+# Number of min to keep backups
+KEEP_BACKUPS_FOR=3 #min
 
 #==============================================================================
 # METHODS
@@ -53,8 +53,8 @@ function create_backups_folder()
 
 function delete_old_backups()
 {
-  echo "Deleting $BACKUP_DIR/*.sql.gz older than $KEEP_BACKUPS_FOR days"
-  find $BACKUP_DIR -type f -name "*.sql.gz" -mtime +$KEEP_BACKUPS_FOR -exec rm {} \;
+  echo "Deleting $BACKUP_DIR/*.sql.gz older than $KEEP_BACKUPS_FOR min"
+  find $BACKUP_DIR -type f -name "*.sql.gz" -mmin +$KEEP_BACKUPS_FOR -exec rm {} \;
 }
 
 function mysql_login() {
