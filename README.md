@@ -27,4 +27,4 @@ mysql> UPDATE animals SET name = 'sharikov' WHERE id = 1;
 
 3) Удалять старые backup только после усрешного создания нового.
 
-4*) Сделать проверку backups по размеру.
+4) Сделать проверку backups по размеру. *
